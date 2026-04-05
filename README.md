@@ -1,18 +1,18 @@
-# 🚀 Hệ sinh thái Quản lý Sinh viên (NTC Workspace)
+#  Student management systemn (NTC Workspace)
 
-Hệ thống quản lý thông tin sinh viên toàn diện, giao tiếp theo thời gian thực (Real-time) không cần qua Backend trung gian. Được thiết kế chuyên biệt cho công tác quản lý đội nhóm.
+A comprehensive student information management system, communicating in real-time without going through an intermediary backend. Specifically designed for team management tasks.
 
-## 🌟 Tính năng nổi bật
-* **Web Client (Front-end):** Giao diện đăng ký chuẩn UI/UX hiện đại (Floating Labels, Responsive, cảnh báo SweetAlert2).
-* **Database (Cloud):** Tích hợp Firebase Realtime Database, cập nhật dữ liệu tự động.
-* **Admin Panel (Java Desktop):** Ứng dụng quản trị trực tiếp trên máy tính. Tích hợp thuật toán lọc Live Search siêu tốc và đồng bộ dữ liệu mây qua RESTful API (GET/POST/DELETE).
+##  Outstanding Features
+* **Web Client (Front-end):** Registration interface with modern UI/UX standards (Floating Labels, Responsive, SweetAlert2 notifications).
+* **Database (Cloud):** Integrated with Firebase Realtime Database, automatic data updates.
+* **Admin Panel (Java Desktop):** Direct management application on the computer. Integrated with super-fast Live Search filter algorithm and cloud data synchronization via RESTful API (GET/POST/DELETE).
 
-## 💻 Công nghệ sử dụng
+## Tools used
 * **Front-end:** HTML, CSS, Vanilla JavaScript (Fetch API)
 * **Back-end/Cloud:** Firebase (Database & Hosting)
 * **Desktop App:** Java (Swing, Regex, HttpURLConnection)
 
-## 📸 Hình ảnh Demo Giao diện
+##  Demo Interface Image
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/7ff4891f-7068-495c-a857-3aa10feb3d62" />
 
 
