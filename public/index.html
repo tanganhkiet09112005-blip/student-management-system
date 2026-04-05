@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Quản lý Sinh viên - NTC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary: #0f172a; /* Xám đen quyền lực - Màu của doanh nghiệp */
+            --primary-hover: #334155;
+            --accent: #2563eb;  /* Xanh dương làm điểm nhấn */
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .wrapper {
+            display: flex;
+            background: #ffffff;
+            border-radius: 16px; /* Bo góc gắt hơn một chút chuẩn phẳng */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            overflow: hidden;
+        }
+
+        /* --- PHẦN TRÁI --- */
+        .image-section {
+            flex: 1;
+            background: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        /* Lớp phủ đen mờ tạo sự sang trọng */
+        .image-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.9));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 50px;
+            color: white;
+        }
+
+        .image-overlay h1 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+        .image-overlay p { font-size: 15px; opacity: 0.8; font-weight: 400; line-height: 1.6; margin: 0; }
+
+        /* --- PHẦN PHẢI --- */
+        .form-section {
+            flex: 1;
+            padding: 60px 50px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h2 { color: var(--text-main); margin: 0 0 8px 0; font-weight: 700; font-size: 28px; letter-spacing: -0.5px; }
+        .subtitle { color: var(--text-muted); font-size: 15px; margin-bottom: 35px; }
+
+        /* --- HIỆU ỨNG FLOATING LABEL (Cực Pro) --- */
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        /* Bí kíp: placeholder=" " để CSS bắt được trạng thái gõ chữ */
+        input {
+            width: 100%;
+            padding: 16px 16px 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            color: var(--text-main);
+            background: transparent;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        label {
+            position: absolute;
+            left: 14px;
+            top: 14px;
+            color: var(--text-muted);
+            font-size: 15px;
+            background: white;
+            padding: 0 4px;
+            transition: all 0.2s ease;
+            pointer-events: none; /* Tránh click nhầm vào label */
+        }
+
+        /* Logic: Trượt label lên khi focus hoặc khi ô input đã có chữ */
+        input:focus ~ label,
+        input:not(:placeholder-shown) ~ label {
+            top: -9px;
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* --- CHECKBOX ĐIỀU KHOẢN --- */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .checkbox-group input { width: auto; margin-right: 10px; cursor: pointer; }
+        .checkbox-group label {
+            position: static;
+            font-size: 14px;
+            color: var(--text-muted);
+            pointer-events: auto;
+        }
+        .checkbox-group a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        .checkbox-group a:hover { text-decoration: underline; }
+
+        /* --- NÚT BẤM & SPINNER --- */
+        button {
+            position: relative;
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button:hover { background-color: var(--primary-hover); }
+        
+        button:disabled {
+            background-color: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Vòng xoay Loading bằng CSS */
+        .spinner {
+            display: none; /* Ẩn đi khi chưa bấm */
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .wrapper { flex-direction: column; }
+            .image-section { display: none; } /* Ẩn ảnh trên mobile cho gọn chuẩn app */
+            .form-section { padding: 40px 30px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="image-section">
+        <div class="image-overlay">
+            <h1>NTC Workspace</h1>
+            <p>Hệ thống quản lý thông tin nội bộ. Vui lòng sử dụng thông tin chính xác để hệ thống đồng bộ dữ liệu.</p>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h2>Khai báo thông tin</h2>
+        <div class="subtitle">Hoàn tất biểu mẫu dưới đây để được cấp quyền truy cập.</div>
+        
+        <div class="input-group">
+            <input type="text" id="maSV" placeholder=" ">
+            <label>Mã Nhân Sự / Sinh Viên</label>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="hoTen" placeholder=" ">
+            <label>Họ và Tên đầy đủ</label>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="lopHoc" placeholder=" ">
+            <label>Đơn vị / Lớp học</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="policy">
+            <label for="policy">Tôi đồng ý với <a href="#">Quy định bảo mật dữ liệu</a></label>
+        </div>
+
+        <button id="btnSubmit" onclick="guiDangKy()">
+            <div class="spinner" id="spinner"></div>
+            <span id="btnText">Đồng Bộ Dữ Liệu</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    async function guiDangKy() {
+        const maSV = document.getElementById('maSV').value;
+        const hoTen = document.getElementById('hoTen').value;
+        const lopHoc = document.getElementById('lopHoc').value;
+        const policy = document.getElementById('policy').checked;
+        
+        const btn = document.getElementById('btnSubmit');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+
+        // KIỂM TRA ĐIỀU KHOẢN
+        if(!policy) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Yêu cầu xác nhận',
+                text: 'Bạn cần đồng ý với Quy định bảo mật trước khi tiếp tục.',
+                confirmButtonColor: '#0f172a'
+            });
+            return;
+        }
+
+        if(!maSV || !hoTen) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Trường dữ liệu trống',
+                text: 'Vui lòng điền đầy đủ Mã và Họ tên.',
+                confirmButtonColor: '#0f172a'
+            });
+            return;
+        }
+
+        // BẬT TRẠNG THÁI LOADING CHUẨN DOANH NGHIỆP
+        btn.disabled = true;
+        btnText.innerText = "Đang xử lý...";
+        spinner.style.display = "block"; // Hiện vòng xoay
+
+        const data = { maSV: maSV, hoTen: hoTen, lopHoc: lopHoc, timestamp: new Date().toISOString() };
+
+        try {
+            // Ní dán Firebase URL vào đây
+            const firebaseURL = "https://quanlysinhvieniuh-default-rtdb.asia-southeast1.firebasedatabase.app/sinhvien.json";
+
+            const response = await fetch(firebaseURL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if(response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đồng bộ thành công!',
+                    text: 'Dữ liệu của bạn đã được ghi nhận vào hệ thống lưu trữ.',
+                    confirmButtonColor: '#2563eb'
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                throw new Error(response.status);
+            }
+        } catch (error) {
+            Swal.fire('Hệ thống gián đoạn', 'Không thể kết nối đến máy chủ. ' + error.message, 'error');
+            // TẮT LOADING KHI CÓ LỖI
+            btn.disabled = false;
+            btnText.innerText = "Đồng Bộ Dữ Liệu";
+            spinner.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
